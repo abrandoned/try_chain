@@ -30,7 +30,10 @@ module TryChain
       symbols.compact!
 
       symbols.reduce(self) do |result, symbol|
-        result = result.try(symbol)
+        result = result.try do |selph|
+          selph.__send__(symbol) if selph.respond_to?(symbol, true)
+        end
+
         break nil if result.nil?
         result
       end
@@ -43,7 +46,10 @@ module TryChain
       symbols.compact!
 
       symbols.reduce(self) do |result, symbol|
-        result = result.try!(symbol)
+        result = result.try! do |selph|
+          selph.__send__(symbol)
+        end
+
         break nil if result.nil?
         result
       end
